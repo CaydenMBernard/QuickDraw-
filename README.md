@@ -6,6 +6,7 @@ To demonstrate the model's functionality, a Pygame-based drawing application was
 - Custom Neural Network Implementation:
     - Built entirely from scratch, without external machine learning frameworks.
       Supports forward propagation, backpropagation, and training with gradient descent.
+    - Uses He Initializaiton, the hidden layers use ReLU activation, and the output layer uses SoftMax activation.
 - Training on Google Quick, Draw! Dataset:
     - Recognizes 10 distinct categories of doodles.
       Dataset preprocessed and scaled for optimal training performance.
