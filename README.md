@@ -13,7 +13,7 @@ To demonstrate the model's functionality, a Pygame-based drawing application was
     - Developed with Pygame, offering a simple and interactive drawing interface.
       Constantly queries the FNN to provide real-time predictions for user drawings.
 # Imports Used
-Python: Core programming language for the project.
-NumPy: Numerical computations and matrix operations.
-Pygame: Interactive drawing application.
-Pillow: Image processing for doodle preprocessing
+- Python: Core programming language for the project.
+- NumPy: Numerical computations and matrix operations.
+- Pygame: Interactive drawing application.
+- Pillow: Image processing for doodle preprocessing
