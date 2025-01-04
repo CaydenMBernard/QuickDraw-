@@ -88,7 +88,7 @@ class Training():
             train_image = inputs[i]["image"].reshape(-1) / 255.0
             a, z = self.FNN.FeedForward(train_image)
             expected_output = np.zeros(self.FNN.output_size)
-            expected_output[self.outputs[inputs[i]]["label"]] = 1
+            expected_output[self.outputs[inputs[i]["label"]]] = 1
 
             # Call backpropogation to get gradient vectors
             w_gradient, b_gradient = self.backpropogation(a, z, expected_output)
@@ -133,7 +133,8 @@ class Training():
     
     def train(self, num_epochs, batch_size):
         for i in range(num_epochs):
-            shuffled_train_data = random.shuffle(self.train_data)
+            shuffled_train_data = self.train_data
+            random.shuffle(shuffled_train_data)
 
             for j in range(1, len(shuffled_train_data) // batch_size):
                 index = j * batch_size
@@ -172,7 +173,7 @@ class Test():
         for i in range(len(self.test_data)):
             test_image = self.test_data[i]["image"].reshape(-1) / 255.0
             activations, _ = self.FNN.FeedForward(test_image)
-            if np.argmax(activations[-1]) == self.outputs[self.test_data[i]]: correct += 1
+            if np.argmax(activations[-1]) == self.outputs[self.test_data[i]["label"]]: correct += 1
 
         return correct / len(self.test_data)
 
@@ -180,4 +181,4 @@ if __name__ == "__main__":
     Train_Data = np.load("Doodle_Data_Train.npy", allow_pickle=True).tolist()
     Test_Data = np.load("Doodle_Data_Test.npy", allow_pickle=True).tolist()
     Train = Training(Train_Data, Test_Data)
-    Train.train(50, 60)
+    Train.train(20, 100)
