@@ -75,9 +75,11 @@ class FNN():
         Returns:
         tuple: A tuple containing all layer activations and z-values.
         """
+        # Set input layer, and initialize list of z values
         self.layers[0] = x
         zs = []
 
+        # Feedforward calculations using linear algebra
         for i in range(self.num_hidden):
             z = np.dot(self.weights[i], self.layers[i]) + self.biases[i]
             zs.append(z)
@@ -138,22 +140,29 @@ class Training():
         Parameters:
         inputs (list): Batch of input samples.
         """
+        # Initialize weight and bias gradients
         w_gradients = []
         b_gradients = []
 
         for i in range(len(inputs)):
+            # Normalize / Vectorize the image, get list of activations, z values, and set up the expected output vector
             train_image = inputs[i]["image"].reshape(-1) / 255.0
             a, z = self.FNN.FeedForward(train_image)
             expected_output = np.zeros(self.FNN.output_size)
             expected_output[self.outputs[inputs[i]["label"]]] = 1
 
+            # Call backpropagation to get gradient vectors
             w_gradient, b_gradient = self.backpropogation(a, z, expected_output)
+
+            # Add gradient vectors to list for training batch
             w_gradients.append(w_gradient)
             b_gradients.append(b_gradient)
 
+        # Get average gradient vectors
         w_gradient_avg = [np.mean([w[i] for w in w_gradients], axis=0) for i in range(len(w_gradients[0]))]
         b_gradient_avg = [np.mean([b[i] for b in b_gradients], axis=0) for i in range(len(b_gradients[0]))]
 
+        # Adjust weights and biases based on gradient vectors and learning rate
         for i in range(self.FNN.num_hidden + 1):
             self.FNN.weights[i] -= w_gradient_avg[i] * self.learning_rate
             self.FNN.biases[i] -= b_gradient_avg[i] * self.learning_rate
@@ -170,12 +179,15 @@ class Training():
         Returns:
         tuple: Gradients for weights and biases.
         """
+        # Initialize gradient vectors
         b_gradient = [np.zeros(b.shape) for b in self.FNN.biases]
         w_gradient = [np.zeros(w.shape) for w in self.FNN.weights]
 
+        # Set output layer gradients, SoftMax with Cross-Entropy Loss
         b_gradient[-1] = a[-1] - e 
         w_gradient[-1] = np.dot(b_gradient[-1].reshape(-1, 1), a[-2].reshape(1, -1))
 
+        # Set hidden layer gradients, ReLU
         for i in range(2, self.FNN.num_hidden + 2):
             b_gradient[-i] = np.dot(self.FNN.weights[-i + 1].T, b_gradient[-i + 1]) * self.dReLU(z[-i])
             w_gradient[-i] = np.dot(b_gradient[-i].reshape(-1, 1), a[-i - 1].reshape(1, -1))
@@ -200,20 +212,26 @@ class Training():
         num_epochs (int): Number of training epochs.
         batch_size (int): Size of each training batch.
         """
+        # Train the network over multiple epochs
         for i in range(num_epochs):
+            # Randomly shuffle the training data
             shuffled_train_data = self.train_data
             random.shuffle(shuffled_train_data)
 
+            # Perform gradient descent on one batch at a time
             for j in range(1, len(shuffled_train_data) // batch_size):
                 index = j * batch_size
                 self.gradient_descent(shuffled_train_data[index-batch_size:index])
                 percent_done = float(j / (len(shuffled_train_data) // batch_size))
                 print(percent_done, end="\r")
 
+            # Decrease the learning rate
             self.learning_rate *= 0.999
             
+            # Save the updated weights and biases
             self.update_parameters()
 
+            # Evaluate the network on the test dataset
             test = Test(self.test_data)
             accuracy = test.evaluate()
             print(f"Accuracy for epoch {str(i)}: {str(accuracy)}")
@@ -254,11 +272,13 @@ class Test():
         correct = 0
 
         for i in range(len(self.test_data)):
+            # Normalize / Vectorize the image, get list of activations, and check if the prediction is correct
             test_image = self.test_data[i]["image"].reshape(-1) / 255.0
             activations, _ = self.FNN.FeedForward(test_image)
             if np.argmax(activations[-1]) == self.outputs[self.test_data[i]["label"]]:
                 correct += 1
 
+        # Return the accuracy
         return correct / len(self.test_data)
 
 if __name__ == "__main__":
