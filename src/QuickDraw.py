@@ -117,15 +117,12 @@ class QuickDraw():
         """
         Update the Pygame display with the current canvas, predictions, and UI elements.
         """
-        # Create a surface from the canvas array
         canvas_surface = pygame.surfarray.make_surface(self.canvas)
-        # Scale the canvas surface to fit the display
         scaled_surface = pygame.transform.scale(canvas_surface, (1024, 1024))
         self.display.blit(scaled_surface, (0, 0))
 
-        pygame.draw.rect(self.display, (7, 22, 48), (1024, 0, 500, 1024))  # Sidebar background
+        pygame.draw.rect(self.display, (7, 22, 48), (1024, 0, 500, 1024))
 
-        # Display the prediction probabilities
         y_offset = 20
         text_surface = self.font.render(f"Predictions:", True, (255, 255, 255))
         self.display.blit(text_surface, (1040, y_offset))
@@ -136,7 +133,6 @@ class QuickDraw():
             self.display.blit(text_surface, (1040, y_offset))
             y_offset += 80
 
-        # Draw the "Clear Display" button
         pygame.draw.rect(self.display, (37, 52, 78), (1094, 884, 360, 120))
         text_surface = self.font.render("Clear Display", True, (255, 255, 255))
         text_rect = text_surface.get_rect(center=(1094 + 360 // 2, 884 + 120 // 2))
