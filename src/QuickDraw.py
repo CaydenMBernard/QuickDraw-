@@ -50,11 +50,18 @@ class QuickDraw():
                 if self.prev_pos:
                     self.bresenham_line(self.prev_pos[0], self.prev_pos[1], x, y)
                 self.prev_pos = (x, y)
-            elif 1044 <= x < 1404 and 884 <= y < 1004:
+            elif 1094 <= x < 1454 and 884 <= y < 1004:
                 self.canvas = np.zeros((1024, 1024))
                 self.prev_pos = None
         else: 
             self.prev_pos = None
+
+    def draw_circle(self, cx, cy, radius):
+        for x in range(cx - radius, cx + radius + 1):
+            for y in range(cy - radius, cy + radius + 1):
+                if (x - cx) ** 2 + (y - cy) ** 2 <= radius ** 2:
+                    if 0 <= x < 1024 and 0 <= y < 1024:
+                        self.canvas[x, y] = 255
 
     def bresenham_line(self, x1, y1, x2, y2):
         """
@@ -73,7 +80,7 @@ class QuickDraw():
         err = dx - dy
 
         while True:
-            self.canvas[x1:x1+10, y1:y1+10] = 255
+            self.draw_circle(x1, y1, 8)
 
             if x1 == x2 and y1 == y2:
                 break
